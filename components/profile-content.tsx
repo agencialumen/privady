@@ -168,7 +168,7 @@ export default function ProfileContent() {
               >
                 <div className="p-3 flex items-center gap-3">
                   <div className="relative h-10 w-10 rounded-full overflow-hidden">
-                    <Image src="/images/profile-avatar.jpg" alt="Profile" fill className="object-cover" />
+                    <Image src="https://iili.io/3ZAmAap.md.jpg" alt="Profile" fill className="object-cover" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Isabelle Lua</p>
