@@ -80,7 +80,8 @@ const CHAT_CONFIG = {
     {
       id: 11,
       type: "model-image",
-      image: "https://iili.io/3ZLrwGf.md.jpg",
+      // Usando a imagem local como fallback e a URL externa como principal
+      image: "/images/cta-diamante.jpg",
     },
     {
       id: 12,
@@ -137,7 +138,7 @@ const MessageBubble = ({ message, isUser }) => {
 
         {message.image && (
           <div className="relative w-full h-48 rounded-lg overflow-hidden mb-2">
-            <Image src={message.image || "/placeholder.svg"} alt="Chat image" fill className="object-cover" />
+            <img src={message.image || "/placeholder.svg"} alt="Chat image" className="w-full h-full object-cover" />
           </div>
         )}
       </div>
