@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -7,8 +8,17 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    domains: ['iili.io'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'iili.io',
+        port: '',
+        pathname: '/**',
+      },
+    ],
     unoptimized: true,
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
