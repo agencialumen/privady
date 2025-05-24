@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { Suspense, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import type * as THREE from "three"
+import { authService } from "@/lib/auth"
 
 // Basic Plan 3D Model
 const BasicModel = () => {
@@ -144,7 +145,26 @@ const Scene = ({ children }: { children: React.ReactNode }) => {
 }
 
 // Subscription card component
-const SubscriptionCard = ({ title, price, features, buttonText, model, popular = false, paymentLink }) => {
+const SubscriptionCard = ({ title, price, features, buttonText, model, popular = false, paymentLink, plan }) => {
+  const handlePurchase = async () => {
+    try {
+      // Gerar ID único para o pagamento
+      const paymentId = `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+      // Criar registro de pagamento pendente
+      const amount = Number.parseFloat(price.replace("R$", "").replace(",", "."))
+      await authService.createPendingPayment("", plan, paymentId, amount)
+
+      // Redirecionar para o checkout com o payment_id
+      const checkoutUrl = `${paymentLink}?payment_id=${paymentId}&plan=${plan}`
+      window.open(checkoutUrl, "_blank")
+    } catch (error) {
+      console.error("Erro ao processar compra:", error)
+      // Fallback: abrir link direto
+      window.open(paymentLink, "_blank")
+    }
+  }
+
   return (
     <motion.div
       whileHover={{
@@ -180,14 +200,12 @@ const SubscriptionCard = ({ title, price, features, buttonText, model, popular =
           ))}
         </ul>
 
-        <a
-          href={paymentLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`w-full py-3 rounded-lg ${popular ? "bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600" : "bg-zinc-700 hover:bg-zinc-600"} text-white font-medium transition-all duration-300 text-center block`}
+        <button
+          onClick={handlePurchase}
+          className={`w-full py-3 rounded-lg ${popular ? "bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600" : "bg-zinc-700 hover:bg-zinc-600"} text-white font-medium transition-all duration-300 text-center`}
         >
           {buttonText}
-        </a>
+        </button>
       </div>
     </motion.div>
   )
@@ -208,6 +226,7 @@ export default function SubscriptionPlans() {
         buttonText="ASSINAR BÁSICO"
         model={<BasicModel />}
         paymentLink="https://pay.kirvano.com/edf52b8b-6fba-4d9c-9038-a663ce40f862"
+        plan="basic"
       />
 
       <SubscriptionCard
@@ -224,6 +243,7 @@ export default function SubscriptionPlans() {
         model={<PremiumModel />}
         popular={true}
         paymentLink="https://pay.kirvano.com/dce77bbb-23cd-4105-82b4-0f37e13fa618"
+        plan="premium"
       />
 
       <SubscriptionCard
@@ -240,6 +260,7 @@ export default function SubscriptionPlans() {
         buttonText="ASSINAR DIAMANTE"
         model={<DiamondModel />}
         paymentLink="https://pay.kirvano.com/4386d038-4f5f-4b9e-bb04-72a7571bcbec"
+        plan="diamond"
       />
     </div>
   )
